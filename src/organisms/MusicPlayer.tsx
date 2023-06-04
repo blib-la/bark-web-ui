@@ -1,8 +1,9 @@
 import PauseRounded from "@mui/icons-material/PauseRounded";
 import PlayArrowRounded from "@mui/icons-material/PlayArrowRounded";
+import ReplyIcon from "@mui/icons-material/Reply";
 import VolumeDownRounded from "@mui/icons-material/VolumeDownRounded";
 import VolumeUpRounded from "@mui/icons-material/VolumeUpRounded";
-import { Card } from "@mui/material";
+import { Card, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Slider from "@mui/material/Slider";
@@ -144,7 +145,23 @@ function formatDuration(time: number) {
 	return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`;
 }
 
-export default function MusicPlayer({ download, text, voice, img }: Generation) {
+export interface MusicPlayerProps {
+	onUse?(parameters: {
+		text: string;
+		voice: string;
+		textTemperature: number;
+		waveformTemperature: number;
+	}): void;
+}
+export default function MusicPlayer({
+	download,
+	text,
+	voice,
+	img,
+	textTemperature,
+	waveformTemperature,
+	onUse,
+}: Generation & MusicPlayerProps) {
 	const [src, setSrc] = useState(img);
 
 	const [state, { play, pause, seek, setVolume }] = useAudio({
@@ -178,6 +195,19 @@ export default function MusicPlayer({ download, text, voice, img }: Generation) 
 					<Typography noWrap>
 						<b>{text}</b>
 					</Typography>
+				</Box>
+				<Box sx={{ position: "absolute", top: 8, right: 8 }}>
+					<Tooltip title="Send to prompt">
+						<IconButton
+							onClick={() => {
+								if (onUse) {
+									onUse({ voice, waveformTemperature, textTemperature, text });
+								}
+							}}
+						>
+							<ReplyIcon />
+						</IconButton>
+					</Tooltip>
 				</Box>
 			</Box>
 			<Slider

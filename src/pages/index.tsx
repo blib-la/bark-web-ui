@@ -89,8 +89,13 @@ const voices = [
 ];
 
 export default function Page({ storedGenerations }: { storedGenerations: Generation[] }) {
+	const [parameters, setParameters] = useState({
+		text: "",
+		voice: "announcer",
+		waveformTemperature: 0.7,
+		textTemperature: 0.7,
+	});
 	const [loading, setLoading] = useState(false);
-	const [voice, setVoice] = useState("announcer");
 	const [generations, setGenerations] = useState<Generation[]>(storedGenerations);
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -102,7 +107,7 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 			);
 			const result = await axios.post("/api/generate", { ...formObject, silent: false });
 			console.log(result.data);
-			setGenerations([...generations, result.data]);
+			setGenerations([result.data, ...generations]);
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -124,8 +129,16 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 							multiline
 							name="text"
 							label="Text"
+							variant="filled"
 							minRows={7}
 							maxRows={14}
+							value={parameters.text}
+							onChange={event => {
+								setParameters(previousState => ({
+									...previousState,
+									text: event.target.value,
+								}));
+							}}
 						/>
 					</Grid>
 					<Grid xs={1} sx={{ display: "flex" }}>
@@ -136,9 +149,13 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 									select
 									name="voice"
 									label="Voice"
-									value={voice}
+									variant="filled"
+									value={parameters.voice}
 									onChange={event => {
-										setVoice(event.target.value);
+										setParameters(previousState => ({
+											...previousState,
+											voice: event.target.value,
+										}));
 									}}
 									SelectProps={{
 										renderValue(value) {
@@ -200,9 +217,14 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 						WebkitOverflowScrolling: "touch",
 					}}
 				>
-					{generations.reverse().map(generation => (
+					{generations.map(generation => (
 						<Grid xs={1} key={generation.fileName}>
-							<MusicPlayer {...generation} />
+							<MusicPlayer
+								{...generation}
+								onUse={parameters_ => {
+									setParameters(parameters_);
+								}}
+							/>
 						</Grid>
 					))}
 				</Grid>
@@ -217,7 +239,7 @@ export async function getServerSideProps() {
 			await readFile(DATA_JSON_PATH, {
 				encoding: "utf-8",
 			})
-		);
+		).reverse();
 
 		return {
 			props: { storedGenerations },

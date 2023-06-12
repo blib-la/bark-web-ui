@@ -101,10 +101,10 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 		event.preventDefault();
 		setLoading(true);
 		try {
-			const formData = new FormData(event.target as HTMLFormElement) as unknown;
-			const formObject = Object.fromEntries<unknown>(
-				formData as Iterable<[PropertyKey, string]>
-			);
+			const formData = new FormData(event.target as HTMLFormElement) as unknown as Iterable<
+				[PropertyKey, string]
+			>;
+			const formObject = Object.fromEntries<unknown>(formData);
 			const result = await axios.post("/api/generate", { ...formObject, silent: false });
 			console.log(result.data);
 			setGenerations([result.data, ...generations]);
@@ -117,12 +117,8 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 
 	return (
 		<Template>
-			<Box
-				component="form"
-				sx={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}
-				onSubmit={handleSubmit}
-			>
-				<Grid container spacing={4} columns={{ xs: 1, md: 2, lg: 3 }} sx={{ pb: 2, px: 4 }}>
+			<Box component="form" onSubmit={handleSubmit}>
+				<Grid container spacing={4} columns={{ xs: 1, md: 2, lg: 3 }} sx={{ m: 0 }}>
 					<Grid xs={1} lg={2}>
 						<TextField
 							fullWidth
@@ -180,7 +176,7 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 										) : (
 											<MenuItem key={entry.id} value={entry.value}>
 												<Avatar
-													src={`/voices/${entry.value}.png`}
+													src={`/api/voices/${entry.value}.png`}
 													sx={{ mr: 2 }}
 												>
 													{entry.language}
@@ -205,17 +201,7 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 						</Card>
 					</Grid>
 				</Grid>
-				<Grid
-					container
-					spacing={4}
-					columns={{ xs: 1, md: 2, lg: 3, xl: 4 }}
-					sx={{
-						my: 0,
-						px: 4,
-						overflow: "auto",
-						WebkitOverflowScrolling: "touch",
-					}}
-				>
+				<Grid container spacing={4} columns={{ xs: 1, md: 2, lg: 3, xl: 4 }} sx={{ m: 0 }}>
 					{generations.map(generation => (
 						<Grid xs={1} key={generation.fileName}>
 							<MusicPlayer

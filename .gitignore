@@ -3,8 +3,9 @@ suno_bark.egg-info/
 
 # Generated
 /public/uploads
-/public/voices
+/public/voices/*.png
 !/public/voices/default.png
+!/public/voices/announcer.png
 /bark_generation.wav
 /build/lib/bark
 

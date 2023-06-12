@@ -1,6 +1,4 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
-import path from "node:path";
-import process from "node:process";
 
 import { execa } from "execa";
 import { nanoid } from "nanoid";
@@ -18,8 +16,10 @@ export default async function handler(request: NextApiRequest, response: NextApi
 		waveformTemperature = 0.7,
 	} = request.body;
 
-	console.log("INPUT");
-	console.log(request.body);
+	if (!silent) {
+		console.log("INPUT");
+		console.log(request.body);
+	}
 
 	const args = [
 		"-m",
@@ -45,18 +45,19 @@ export default async function handler(request: NextApiRequest, response: NextApi
 		await execa("python", args, { stdio: "inherit" });
 
 		const data = {
-			download: `http://127.0.0.1:9000/uploads/wav/${fileName}`,
+			download: `/api/uploads/wav/${fileName}`,
 			text,
 			voice,
-			img: `http://127.0.0.1:9000/voices/${voice}.png`,
-			filePath: path.join(process.cwd(), "public/uploads/wav", fileName),
+			img: `/api/voices/${voice}.png`,
 			fileName,
 			textTemperature,
 			waveformTemperature,
 		};
 
-		console.log("OUTPUT");
-		console.log(data);
+		if (!silent) {
+			console.log("OUTPUT");
+			console.log(data);
+		}
 
 		try {
 			const dataJson = JSON.parse(

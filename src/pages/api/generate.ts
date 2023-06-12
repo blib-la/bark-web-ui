@@ -45,10 +45,10 @@ export default async function handler(request: NextApiRequest, response: NextApi
 		await execa("python", args, { stdio: "inherit" });
 
 		const data = {
-			download: `/uploads/wav/${fileName}`,
+			download: `http://127.0.0.1:9000/uploads/wav/${fileName}`,
 			text,
 			voice,
-			img: `/voices/${voice}.png`,
+			img: `http://127.0.0.1:9000/voices/${voice}.png`,
 			filePath: path.join(process.cwd(), "public/uploads/wav", fileName),
 			fileName,
 			textTemperature,

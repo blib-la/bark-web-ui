@@ -210,7 +210,6 @@ export default function Page({ storedGenerations }: { storedGenerations: Generat
 					spacing={4}
 					columns={{ xs: 1, md: 2, lg: 3, xl: 4 }}
 					sx={{
-						flex: 1,
 						my: 0,
 						px: 4,
 						overflow: "auto",

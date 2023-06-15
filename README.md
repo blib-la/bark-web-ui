@@ -5,10 +5,15 @@ information on Bark by [Suno](https://www.suno.ai/).
 
 ## Notice
 
-Bark is limited to ~13 seconds af output. This demo does not (yet) handle longer texts
+Bark is limited to ~13 seconds af output. This demo does not (yet) handle longer texts, but we already have protottypes that handle it, so this will be rather easy to add. **stay tuned**
 
 This project (currently) assumes that you have used npm before and are comfortable ensuring your environment to be set
 up.
+
+## User Interface
+
+![image](https://github.com/failfa-st/bark-web-ui/assets/1148334/0843b43c-233a-402b-a519-705fb30af981)
+
 
 ## Setup
 
